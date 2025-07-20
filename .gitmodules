@@ -1,6 +1,7 @@
 [submodule "libDaisy"]
 	path = libDaisy
-	url = https://github.com/electro-smith/libDaisy.git
-[submodule "daisySP"]
-	path = daisySP
-	url = https://github.com/electro-smith/daisySP.git
+	url = https://github.com/electro-smith/libDaisy
+[submodule "DaisySP"]
+	path = DaisySP
+	url = https://github.com/electro-smith/DaisySP
+	branch = master
