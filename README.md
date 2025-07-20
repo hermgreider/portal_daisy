@@ -1,8 +1,11 @@
 # portal_daisy
 Daisy application for the portal
 
+### Prereqs
 
-### To clone and build libDaisy and DaisySP:
+This assumes you have installed the necessary tools from https://daisy.audio/tutorials/cpp-dev-env/
+
+### To clone the portal_daisy and build libDaisy and DaisySP:
 
 git clone --recurse-submodules https://github.com/hermgreider/portal_daisy.git
 ./rebuild_all.sh
