@@ -1,5 +1,7 @@
 #include "bell_synth.h"
 
+#include "External/board_input.h" // TEMP
+
 const float BellSynth::ratios_[BellSynth::kNumTypes][BellSynth::kNumPartials] = {
     {1.0f, 2.7f, 3.9f, 5.4f},
     {1.0f, 2.0f, 2.5f, 7.0f},
@@ -18,6 +20,8 @@ const float BellSynth::amps_[BellSynth::kNumTypes][BellSynth::kNumPartials] = {
     {1.0f, 0.7f, 0.5f, 0.3f}
 };
 
+extern BoardInput *board;
+
 void BellSynth::Init(float sample_rate)
 {
     for (int i = 0; i < kNumPartials; i++)
@@ -35,6 +39,8 @@ void BellSynth::Init(float sample_rate)
     reverb_.Init(sample_rate);
     reverb_.SetFeedback(0.85f);
     reverb_.SetLpFreq(12000.0f);
+
+    board->GetSeed().PrintLine("BellSynth: Init complete");
 }
 
 void BellSynth::Select1() 
@@ -44,7 +50,23 @@ void BellSynth::Select1()
 
 void BellSynth::Select2() 
 {
+    SetType();
+    Trigger();
+}
+
+void BellSynth::Select3() 
+{
     
+}
+
+// Pitch Control
+void BellSynth::Mod1(float value)
+{
+    base_freq_ = 220.0f * powf(2.0f, 2.0f * value);
+}
+
+void BellSynth::Update() 
+{
 }
 
 void BellSynth::Trigger()
@@ -56,14 +78,9 @@ void BellSynth::Trigger()
     }
 }
 
-void BellSynth::SetType(int type)
+void BellSynth::SetType()
 {
-    bell_type_ = type % kNumTypes;
-}
-
-void BellSynth::SetBaseFreq(float freq)
-{
-    base_freq_ = freq;
+    bell_type_ = (bell_type_ + 1) % kNumTypes;
 }
 
 void BellSynth::SetReverbFeedback(float fb)

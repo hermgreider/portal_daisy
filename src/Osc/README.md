@@ -1,13 +1,12 @@
 ### Osc application
 
-Simple test program to verify your setup. This is straight from DaisyExamples/seed/Osc. 
+Simple test program to verify your setup. 
 
-To build:
-
-``` 
-Connect Daisy to Mac
-Hit Boot and then Reset
+### To run the Osc program
+First, connect the Daisy Seed to the computer. Press Boot, then Reset to put in DFU mode.
+```
+cd src/Osc
 make clean; make; make program-dfu
 ```
 
-Play a note with button 2. Change note pitch with knob 1.
+Should produce a drone sound on middle C.

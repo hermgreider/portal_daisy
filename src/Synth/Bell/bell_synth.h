@@ -3,26 +3,29 @@
 #include "daisy_pod.h"
 #include "daisysp.h"
 
+#include "Synth/synth.h"
+
 using namespace daisy;
 using namespace daisysp;
 
-class BellSynth {
+class BellSynth : public Synth {
   public:
     static constexpr int kNumPartials = 4;
     static constexpr int kNumTypes = 6;
 
+    BellSynth() {}
     void Init(float sample_rate);
-
-    // Callback for main loop - On 1 msec
     void Update();
-
-    // Produce left/right sound values for AudioCallback
-    void Process(float &outL, float &outR);
     
     /* Trigger something - typically Button press or Encoder click */
     void Select1();
     void Select2();
     void Select3();
+
+    /* Modifiers - typically a knob */
+    void Mod1(float value);
+    
+    void Process(float &outL, float &outR);
 
     int GetType() const { return bell_type_; }
     float GetReverbMix() const { return reverb_mix_; }
@@ -40,7 +43,7 @@ class BellSynth {
     static const float amps_[kNumTypes][kNumPartials];
 
     void Trigger();
-    void SetType(int type);
+    void SetType();
     void SetBaseFreq(float freq);
     void SetReverbFeedback(float fb);
     void SetReverbMix(float mix);

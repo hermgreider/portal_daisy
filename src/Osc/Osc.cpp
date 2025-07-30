@@ -28,6 +28,9 @@ int main(void)
     hw.SetAudioBlockSize(4);
     float sample_rate = hw.AudioSampleRate();
 
+    hw.StartLog();
+    hw.PrintLine("Startup");
+
     // Oscillator
     osc.Init(sample_rate);
     osc.SetWaveform(Oscillator::WAVE_SIN);
@@ -36,5 +39,9 @@ int main(void)
 
     hw.StartAudio(AudioCallback);
 
-    while (1) {}
+    while (1) 
+    {
+        hw.PrintLine("Main loop");
+        System::Delay(1000);
+    }
 }
