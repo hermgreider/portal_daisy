@@ -30,6 +30,10 @@ void PodInput::Update()
     {
         controller_->Select2();
     }
+    if(pod_.encoder.RisingEdge())
+    {
+        controller_->Select3();
+    }    
 
     float cur_knob1 = pod_.knob1.Process();
     if (cur_knob1 != knob1_val_) {

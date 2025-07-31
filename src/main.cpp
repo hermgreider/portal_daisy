@@ -38,7 +38,6 @@ int main(void)
     board->StartAudio(AudioCallback);
     board->GetSeed().PrintLine("Portal: Startup Complete");
 
-    uint16_t count = 0;
     while (1)
     {
         controller.Update();

@@ -11,5 +11,5 @@ enum class BoardType { POD, SIMPLEFIX, SEED };
 struct Config {
 public:
   BoardType boardType = BoardType::POD; 
-  std::vector<Synth *> synths = { new BellSynth(), new DroneSynth() };
+  std::vector<Synth *> synths = { new DroneSynth(), new BellSynth() };
 };

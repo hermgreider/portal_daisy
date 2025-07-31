@@ -1,4 +1,3 @@
-// === drone_synth.h ===
 #pragma once
 
 #include "daisy_pod.h"
@@ -58,4 +57,3 @@ class DroneSynth : public Synth {
     float randWalk(float &val, float amt, float range);
     void InitVoice(Voice &v, float freq);
 };
-

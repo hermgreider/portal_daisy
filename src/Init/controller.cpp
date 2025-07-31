@@ -63,11 +63,14 @@ void Controller::Select1()
 void Controller::Select2()
 {
     synths_[current_synth_]->Select2();
+    board->GetSeed().PrintLine("Select2 pressed");
 }
 
+/* Encoder on Pod - switch to another synth */
 void Controller::Select3()
 {
-    synths_[current_synth_]->Select3();
+    board->GetSeed().PrintLine("Next Synth");
+    current_synth_ = ((current_synth_ + 1) % synths_.size());
 }
 
 void Controller::Incr()
