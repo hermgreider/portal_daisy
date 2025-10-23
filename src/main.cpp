@@ -1,17 +1,18 @@
 #include "daisy_seed.h"
+#include "daisysp.h"
 
-#include "External/board_input.h"
-#include "Init/board_factory.h"
+#include "External/midi_input.h"
+#include "External/midi_file_player.h"
 #include "Init/controller.h"
-
-#include "External/pod_input.h"
 
 using namespace daisy;
 
 Config config;
 Controller controller;
-BoardFactory boardSetup;
-BoardInput *board;
+MidiInput midiInput;
+MidiFilePlayer midiFilePlayer;
+
+DaisySeed hw;
 
 void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, size_t size)
 {
@@ -29,18 +30,35 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, s
 
 int main(void)
 {
-    BoardInput *new_board = boardSetup.CreateBoard(&config);
-    board = new_board;
-    board->Init(&controller);
+    hw.Configure();
+    hw.Init();
+    hw.SetAudioBlockSize(4);
+    hw.StartLog();
 
-    controller.Init(board, &config);
+    System::Delay(1000);
 
-    board->StartAudio(AudioCallback);
-    board->GetSeed().PrintLine("Portal: Startup Complete");
+    hw.PrintLine("Startup");
+
+    controller.Init(&config);
+
+    // Initialize Midi -- TODO: where should this go? Controller?
+    midiInput.Init(&controller);
+    midiFilePlayer.Init(&controller);
+
+    hw.StartAudio(AudioCallback);
+    System::Delay(500);
+    hw.PrintLine("Portal: Startup Complete");
+
+    // NoteOnEvent note = { 0, 69, 127 };
+    // controller.NoteOn(note);
 
     while (1)
     {
         controller.Update();
+        midiInput.Update(); // TODO: Move this
+        midiFilePlayer.Update();
+
+        // hw.PrintLine("Loop");
         System::Delay(1);
     }
 }

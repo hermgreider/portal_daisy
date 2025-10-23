@@ -1,5 +1,6 @@
 {
     "files.associations": {
         "new": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/Users/hermgreider/Documents/Projects/Daisy/portal_daisy/daisySP"
 }

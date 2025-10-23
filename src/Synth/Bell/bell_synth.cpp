@@ -1,6 +1,6 @@
 #include "bell_synth.h"
 
-#include "External/board_input.h" // TEMP
+extern DaisySeed hw;
 
 const float BellSynth::ratios_[BellSynth::kNumTypes][BellSynth::kNumPartials] = {
     {1.0f, 2.7f, 3.9f, 5.4f},
@@ -20,7 +20,6 @@ const float BellSynth::amps_[BellSynth::kNumTypes][BellSynth::kNumPartials] = {
     {1.0f, 0.7f, 0.5f, 0.3f}
 };
 
-extern BoardInput *board;
 
 void BellSynth::Init(float sample_rate)
 {
@@ -40,7 +39,7 @@ void BellSynth::Init(float sample_rate)
     reverb_.SetFeedback(0.85f);
     reverb_.SetLpFreq(12000.0f);
 
-    board->GetSeed().PrintLine("BellSynth: Init complete");
+    hw.PrintLine("BellSynth: Init complete");
 }
 
 void BellSynth::Select1() 
@@ -65,6 +64,18 @@ void BellSynth::Mod1(float value)
     base_freq_ = 220.0f * powf(2.0f, 2.0f * value);
 }
 
+// Reverb Mix
+void BellSynth::Mod2(float value)
+{
+    SetReverbMix(value);
+}
+
+// Reverb Feedback
+void BellSynth::Mod3(float value)
+{
+    SetReverbFeedback(value);
+}
+
 void BellSynth::Update() 
 {
 }
@@ -85,6 +96,7 @@ void BellSynth::SetType()
 
 void BellSynth::SetReverbFeedback(float fb)
 {
+    hw.PrintLine("BellSynth: SetFeedback(%f)", fb);
     reverb_.SetFeedback(fb);
 }
 
@@ -106,4 +118,16 @@ void BellSynth::Process(float &outL, float &outR)
 
     outL = sig * (1.0f - reverb_mix_) + wetL * reverb_mix_;
     outR = sig * (1.0f - reverb_mix_) + wetR * reverb_mix_;
+}
+
+void BellSynth::NoteOn(NoteOnEvent m)
+{
+    hw.PrintLine("BellSynth NoteOn: %d, vel: %d", m.note, m.velocity);
+
+    base_freq_ = 440.f * powf(2.f, (m.note - 69) / 12.f);
+    Trigger();
+}
+
+void BellSynth::NoteOff(NoteOffEvent m)
+{
 }

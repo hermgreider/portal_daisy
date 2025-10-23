@@ -6,10 +6,13 @@
 #include "Synth/Bell/bell_synth.h"
 #include "Synth/DroneSynth/drone_synth.h"
 
-enum class BoardType { POD, SIMPLEFIX, SEED };
+// enum class BoardType { POD, SIMPLEFIX, SEED };
 
 struct Config {
 public:
-  BoardType boardType = BoardType::POD; 
-  std::vector<Synth *> synths = { new DroneSynth(), new BellSynth() };
+  BellSynth bellSynth;
+  DroneSynth droneSynth;
+  // BoardType boardType = BoardType::SEED; 
+  std::vector<Synth *> synths = { &droneSynth, &bellSynth };
+  // std::vector<Synth *> synths = { &bellSynth };
 };

@@ -4,10 +4,12 @@
  * Factory for the board level input
  */
 
+ // TODO: Probably eliminate this class
+
 #include "Config/config.h"
-#include "External/board_input.h"
+#include "External/seed_input.h"
 
 class BoardFactory {
   public:
-    BoardInput *CreateBoard(Config *config);
+    SeedInput *CreateBoard(Config *config);
 };

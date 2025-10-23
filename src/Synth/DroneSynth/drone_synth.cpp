@@ -12,7 +12,7 @@ void DroneSynth::Init(float sr)
     lfo.SetAmp(1.0f);
     lfo.SetWaveform(Oscillator::WAVE_TRI);
 
-    SetChord(0);  // Initialize to first chord
+    InitVoices();
 }
 
 void DroneSynth::Update() {}    
@@ -20,17 +20,16 @@ void DroneSynth::Select1() {}
 void DroneSynth::Select2() {}
 void DroneSynth::Select3() {}
 
-void DroneSynth::SetChord(int chord_index) 
+void DroneSynth::InitVoices() 
 {
-    chord_index = chord_index % kNumChords;
     for (int i = 0; i < kNumVoices; ++i) {
-        InitVoice(voices[i], chords[chord_index][i]);
+        InitVoice(voices[i]);
     }
 }
 
-void DroneSynth::InitVoice(Voice &v, float freq) 
+void DroneSynth::InitVoice(Voice &v) 
 {
-    v.freq = freq;
+    v.freq = 0;
     v.drift1 = v.drift2 = v.driftSub = 0.0f;
 
     v.osc1.Init(samplerate);
@@ -65,6 +64,8 @@ void DroneSynth::Process(float &outL, float &outR)
 
     for (int v = 0; v < kNumVoices; ++v) {
         Voice &voice = voices[v];
+        if (voice.active == false) 
+            continue;
 
         float d1 = randWalk(voice.drift1, 0.00001f, 0.02f);
         float d2 = randWalk(voice.drift2, 0.00001f, 0.02f);
@@ -104,3 +105,33 @@ float DroneSynth::GetCutoffBase() const
 {
     return cutoff_base;
 }
+
+void DroneSynth::NoteOn(NoteOnEvent m)
+{
+    voices[current_voice].NoteOn(m.note);
+    current_voice = (current_voice + 1) % kNumVoices;
+}
+
+void DroneSynth::NoteOff(NoteOffEvent m)
+{
+    for(int v = 0; v < kNumVoices; v++)
+    {
+        voices[v].NoteOff(m.note);
+    }
+}
+
+void DroneSynth::Voice::NoteOn(int midinote)
+{
+    note = midinote;
+    freq = 440.f * powf(2.f, (midinote - 69) / 12.f);
+    active = true;
+}
+
+void DroneSynth::Voice::NoteOff(int midinote)
+{
+    if(note == midinote)
+    {
+        active = false;
+    }
+}
+
