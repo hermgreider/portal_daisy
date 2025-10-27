@@ -9,7 +9,7 @@ using namespace daisy;
 
 Config config;
 Controller controller;
-MidiInput midiInput;
+// MidiInput midiInput;
 MidiFilePlayer midiFilePlayer;
 
 DaisySeed hw;
@@ -41,21 +41,26 @@ int main(void)
 
     controller.Init(&config);
 
-    // Initialize Midi -- TODO: where should this go? Controller?
-    midiInput.Init(&controller);
-    midiFilePlayer.Init(&controller);
-
     hw.StartAudio(AudioCallback);
     System::Delay(500);
-    hw.PrintLine("Portal: Startup Complete");
+    hw.PrintLine("Portal: Before MIDI");
 
-    // NoteOnEvent note = { 0, 69, 127 };
-    // controller.NoteOn(note);
+    controller.DebugNote(80, 3);
+    System::Delay(500);
+
+    // Initialize Midi -- TODO: where should this go? Controller?
+    // midiInput.Init(&controller);
+    midiFilePlayer.Init(&controller);
+
+    controller.DebugNote(69, 3);
+    System::Delay(500);
+
+    hw.PrintLine("Portal: Startup Complete");
 
     while (1)
     {
         controller.Update();
-        midiInput.Update(); // TODO: Move this
+        // midiInput.Update(); // TODO: Move this
         midiFilePlayer.Update();
 
         // hw.PrintLine("Loop");

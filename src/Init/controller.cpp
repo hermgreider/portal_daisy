@@ -40,6 +40,18 @@ void Controller::NoteOff(NoteOffEvent m)
     synths_[current_synth_]->NoteOff(m);
 }
 
+void Controller::DebugNote(uint8_t val, uint8_t repeat) 
+{
+    for (uint8_t i = 0; i<repeat; i++) {
+        NoteOnEvent m = { 0, val, 127 };
+        synths_[current_synth_]->NoteOn(m);
+        System::Delay(200);
+        NoteOffEvent o = { 0, val, 0 };
+        synths_[current_synth_]->NoteOff(o);
+        System::Delay(500);
+    }
+}
+
 void Controller::Mod1(float val)
 {
     synths_[current_synth_]->Mod1(val);

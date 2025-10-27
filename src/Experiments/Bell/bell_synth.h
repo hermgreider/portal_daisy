@@ -27,6 +27,12 @@ class BellSynth {
     int GetType() const { return bell_type_; }
     float GetReverbMix() const { return reverb_mix_; }
 
+    void Trigger();
+    void SetType(int type);
+    void SetBaseFreq(float freq);
+    void SetReverbFeedback(float fb);
+    void SetReverbMix(float mix);
+
   private:
     Oscillator partials_[kNumPartials];
     AdEnv envelopes_[kNumPartials];
@@ -39,9 +45,4 @@ class BellSynth {
     static const float ratios_[kNumTypes][kNumPartials];
     static const float amps_[kNumTypes][kNumPartials];
 
-    void Trigger();
-    void SetType(int type);
-    void SetBaseFreq(float freq);
-    void SetReverbFeedback(float fb);
-    void SetReverbMix(float mix);
 };

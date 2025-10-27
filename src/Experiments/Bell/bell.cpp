@@ -20,7 +20,7 @@ constexpr int NUM_TYPES = 6;
 
 Oscillator partials[NUM_PARTIALS];
 AdEnv envelopes[NUM_PARTIALS];
-ReverbSc reverb;
+// ReverbSc reverb;
 
 int bell_type = 0;
 float base_freq = 880.0f; // A5 by default
@@ -67,9 +67,11 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, s
             sig += partials[p].Process() * envelopes[p].Process() * bell_amps[bell_type][p];
         }
 
-        reverb.Process(sig, sig, &wetL, &wetR);
-        out[0][i] = sig * (1.0f - reverb_mix) + wetL * reverb_mix;
-        out[1][i] = sig * (1.0f - reverb_mix) + wetR * reverb_mix;
+        // reverb.Process(sig, sig, &wetL, &wetR);
+        // out[0][i] = sig * (1.0f - reverb_mix) + wetL * reverb_mix;
+        // out[1][i] = sig * (1.0f - reverb_mix) + wetR * reverb_mix;
+        out[0][i] = sig;
+        out[1][i] = sig;
     }
 }
 
@@ -91,9 +93,9 @@ int main(void)
         envelopes[i].SetMin(0.0f);
     }
 
-    reverb.Init(sample_rate);
-    reverb.SetFeedback(0.85f);
-    reverb.SetLpFreq(12000.0f);
+    // reverb.Init(sample_rate);
+    // reverb.SetFeedback(0.85f);
+    // reverb.SetLpFreq(12000.0f);
 
     pod.StartAdc();
     pod.StartAudio(AudioCallback);
@@ -116,15 +118,15 @@ int main(void)
         }
 
         // Encoder click changes reverb mix
-        reverb_mix += pod.encoder.Increment() * 0.01f;
-        reverb_mix = fclamp(reverb_mix, 0.0f, 1.0f);
+        // reverb_mix += pod.encoder.Increment() * 0.01f;
+        // reverb_mix = fclamp(reverb_mix, 0.0f, 1.0f);
 
         // Knob1 controls pitch (A4 to A6)
         base_freq = 220.0f * powf(2.0f, 2.0f * pod.knob1.Process());
 
         // Knob2 controls reverb feedback
         float fb = 0.7f + 0.29f * pod.knob2.Process();
-        reverb.SetFeedback(fb);
+        // reverb.SetFeedback(fb);
 
         // Only update LED 1 if reverb_mix has changed significantly
         if (fabs(reverb_mix - previous_reverb_mix) > 0.01f)

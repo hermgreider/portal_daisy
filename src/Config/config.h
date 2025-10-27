@@ -13,6 +13,6 @@ public:
   BellSynth bellSynth;
   DroneSynth droneSynth;
   // BoardType boardType = BoardType::SEED; 
-  std::vector<Synth *> synths = { &droneSynth, &bellSynth };
-  // std::vector<Synth *> synths = { &bellSynth };
+  // std::vector<Synth *> synths = { &droneSynth, &bellSynth };
+  std::vector<Synth *> synths = { &droneSynth};
 };

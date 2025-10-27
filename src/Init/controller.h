@@ -21,6 +21,7 @@ class Controller {
 
     void NoteOn(NoteOnEvent m);
     void NoteOff(NoteOffEvent m);
+    void DebugNote(uint8_t val, uint8_t repeat);
     void Mod1(float val);
     void Mod2(float val);
     void Mod3(float val);

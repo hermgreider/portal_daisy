@@ -51,10 +51,16 @@ void MidiFilePlayer::Init(Controller *controller)
     if (LoadMidi("calm.mid")) 
     {
         hardware.PrintLine("MIDI loaded successfully");
+        controller->DebugNote(80, 1);
+        controller->DebugNote(81, 1);
+        controller->DebugNote(82, 1);
     }
     else 
     {
         hardware.PrintLine("MIDI load failed");
+        controller->DebugNote(60, 1);
+        controller->DebugNote(61, 1);
+        controller->DebugNote(62, 1);
     }
 
     start_time_ms = System::GetNow();

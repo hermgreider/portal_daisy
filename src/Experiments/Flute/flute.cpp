@@ -9,7 +9,7 @@ Adsr        env;
 Oscillator  sine_main, sine_detune, vibrato;
 Svf         tone_filter, breath_filter;
 WhiteNoise  noise;
-ReverbSc    reverb;
+// ReverbSc    reverb;
 
 float base_freq = 440.0f;
 bool gate = false;
@@ -48,7 +48,7 @@ void AudioCallback(AudioHandle::InputBuffer in, AudioHandle::OutputBuffer out, s
         sig = filtered_tone + breath;
 
         // Apply reverb to the combined signal
-        reverb.Process(sig, sig, &rev_l, &rev_r);
+        // reverb.Process(sig, sig, &rev_l, &rev_r);
         out[0][i] = (1.0f - reverb_mix) * sig + reverb_mix * rev_l;  // Left channel
         out[1][i] = (1.0f - reverb_mix) * sig + reverb_mix * rev_r;  // Right channel
     }
@@ -89,9 +89,9 @@ int main(void)
     noise.Init();
 
     // Reverb
-    reverb.Init(sample_rate);
-    reverb.SetFeedback(0.85f);
-    reverb.SetLpFreq(12000.0f);
+    // reverb.Init(sample_rate);
+    // reverb.SetFeedback(0.85f);
+    // reverb.SetLpFreq(12000.0f);
 
     hw.StartAdc();
     hw.StartAudio(AudioCallback);
@@ -119,11 +119,11 @@ int main(void)
         // Reverb feedback (Knob 2)
         float feedback = hw.knob2.Process();
         feedback = fclamp(feedback, 0.2f, 0.95f);
-        reverb.SetFeedback(feedback);
+        // reverb.SetFeedback(feedback);
 
         // Reverb mix (encoder)
-        reverb_mix += 0.01f * hw.encoder.Increment();
-        reverb_mix = fclamp(reverb_mix, 0.0f, 1.0f);
+        // reverb_mix += 0.01f * hw.encoder.Increment();
+        // reverb_mix = fclamp(reverb_mix, 0.0f, 1.0f);
 
         // LED feedback
         hw.led1.Set(reverb_mix, 0.0f, 1.0f - reverb_mix);

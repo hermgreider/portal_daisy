@@ -1,15 +1,17 @@
-TARGET = flute
+TARGET = brass
 PROJECT_NAME = $(TARGET)
+
+APP_TYPE = BOOT_SRAM
 
 USE_DAISYSP_LGPL = 1
 LDFLAGS += -u _printf_float
 
 # Sources
-CPP_SOURCES = flute.cpp
+CPP_SOURCES = brass.cpp
 
 # Library Locations
-LIBDAISY_DIR = ../../libDaisy
-DAISYSP_DIR = ../../DaisySP
+LIBDAISY_DIR = ../../../libDaisy
+DAISYSP_DIR = ../../../DaisySP
 
 # Core location, and generic makefile.
 SYSTEM_FILES_DIR = $(LIBDAISY_DIR)/core
