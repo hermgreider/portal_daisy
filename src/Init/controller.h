@@ -36,4 +36,5 @@ class Controller {
 
     std::vector<ExternalInput*> inputs_;
     std::vector<Synth*> synths_;
+    Synth *debugSynth;
 };

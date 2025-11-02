@@ -12,7 +12,10 @@ src/External/ff_lfn_stub.cpp \
 src/Init/controller.cpp \
 src/External/midi_input.cpp \
 src/Synth/DroneSynth/drone_synth.cpp \
+src/Synth/MoogySynth/moogy_synth.cpp \
 src/Synth/Bell/bell_synth.cpp \
+src/Synth/SimpleBell/simple_bell_synth.cpp \
+src/Synth/ShakerSynth/shaker_synth.cpp \
 src/Synth/Util/reverbsc.cpp \
 src/Synth/Util/moogladder.cpp \
 src/External/midi_file_player.cpp \

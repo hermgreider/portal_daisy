@@ -64,8 +64,6 @@ void DroneSynth::Process(float &outL, float &outR)
 
     for (int v = 0; v < kNumVoices; ++v) {
         Voice &voice = voices[v];
-        if (voice.active == false) 
-            continue;
 
         float d1 = randWalk(voice.drift1, 0.00001f, 0.02f);
         float d2 = randWalk(voice.drift2, 0.00001f, 0.02f);
@@ -85,7 +83,8 @@ void DroneSynth::Process(float &outL, float &outR)
         voice.filter.SetFreq(cutoff);
         float filtered = tanh(voice.filter.Process(sig) * 1.5f);
 
-        float envOut = voice.env.Process(true);
+        float envOut = voice.env.Process(voice.active);
+
         mix += filtered * envOut;
     }
     outL = outR = mix * 0.2f;

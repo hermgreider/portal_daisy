@@ -120,11 +120,24 @@ void BellSynth::Process(float &outL, float &outR)
     outR = sig * (1.0f - reverb_mix_) + wetR * reverb_mix_;
 }
 
+static int foldNoteToRange(int note, int minNote, int maxNote)
+{
+    // Shift up or down by 12s to land in the right octave
+    int transposed = note;
+    if (transposed < minNote)
+        transposed += 12 * ((minNote - transposed + 11) / 12);
+    else if (transposed > maxNote)
+        transposed -= 12 * ((transposed - maxNote + 11) / 12);
+    return transposed;
+}
+
 void BellSynth::NoteOn(NoteOnEvent m)
 {
-    hw.PrintLine("BellSynth NoteOn: %d, vel: %d", m.note, m.velocity);
+    uint8_t note = foldNoteToRange(m.note, 40, 92);
 
-    base_freq_ = 440.f * powf(2.f, (m.note - 69) / 12.f);
+    hw.PrintLine("BellSynth NoteOn: %d, fixed: %d, vel: %d", m.note, note, m.velocity);
+
+    base_freq_ = 440.f * powf(2.f, (note - 69) / 12.f);
     Trigger();
 }
 

@@ -2,12 +2,14 @@
 #include <string.h>
 #include "daisy_seed.h"
 #include "fatfs.h"
-#include "midi_file_player.h"
+#include "Config/config.h"
 #include "Init/controller.h"
+#include "midi_file_player.h"
 
 using namespace daisy;
 
 extern DaisySeed hardware;
+extern Config config;
 
 // ---------- SD Card --------------------
 #define DSY_TEXT __attribute__((section(".text")))
@@ -28,8 +30,6 @@ DSY_TEXT std::vector<MyMidiEvent> sequence;
 size_t seq_index = 0;
 uint32_t start_time_ms = 0;
 
-const char* fname = "calm.mid";
-
 void MidiFilePlayer::Init(Controller *controller)
 {
     controller_ = controller;
@@ -48,7 +48,7 @@ void MidiFilePlayer::Init(Controller *controller)
     /** mount the filesystem to the root directory */
     f_mount(&fsi.GetSDFileSystem(), "/", 1);
 
-    if (LoadMidi("calm.mid")) 
+    if (LoadMidi(config.midi_fname)) 
     {
         hardware.PrintLine("MIDI loaded successfully");
         controller->DebugNote(80, 1);
@@ -186,7 +186,7 @@ bool MidiFilePlayer::LoadMidi(const char* fname)
             else f_lseek(&SDFile, f_tell(&SDFile)+1);
         }
 
-        // if (sequence.size() > 4) break;
+        if (sequence.size() > 200) break;
     }
 
     f_close(&SDFile);
