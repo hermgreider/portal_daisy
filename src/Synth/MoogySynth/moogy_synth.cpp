@@ -17,10 +17,13 @@ void MoogySynth::Init(float sr)
     InitVoices();
 }
 
-void MoogySynth::Update() {}    
+void MoogySynth::Update() {
+    // get distance
+}
 void MoogySynth::Select1() {}
 void MoogySynth::Select2() {}
 void MoogySynth::Select3() {}
+
 
 void MoogySynth::InitVoices() 
 {

@@ -13,9 +13,9 @@ extern Config config;
 
 // ---------- SD Card --------------------
 #define DSY_TEXT __attribute__((section(".text")))
-DSY_TEXT FIL            SDFile;
+DSY_TEXT FIL SDFile;
 DSY_TEXT FatFSInterface fsi;
-SdmmcHandler   sd;
+SdmmcHandler sd;
 
 // ------------------ MIDI Event ------------------
 struct MyMidiEvent
@@ -48,14 +48,14 @@ void MidiFilePlayer::Init(Controller *controller)
     /** mount the filesystem to the root directory */
     f_mount(&fsi.GetSDFileSystem(), "/", 1);
 
-    if (LoadMidi(config.midi_fname)) 
+    if (LoadMidi(config.midi_fname))
     {
         hardware.PrintLine("MIDI loaded successfully");
         controller->DebugNote(80, 1);
         controller->DebugNote(81, 1);
         controller->DebugNote(82, 1);
     }
-    else 
+    else
     {
         hardware.PrintLine("MIDI load failed");
         controller->DebugNote(60, 1);
@@ -68,52 +68,52 @@ void MidiFilePlayer::Init(Controller *controller)
 
 void MidiFilePlayer::Update()
 {
-    if (seq_index >= sequence.size()) 
+    if (seq_index >= sequence.size())
     {
         hardware.PrintLine("MidiFilePlayer: Resetting Loop");
         seq_index = 0;
         start_time_ms = System::GetNow();
         return;
-    } 
-        
+    }
+
     uint32_t now = System::GetNow() - start_time_ms;
 
     if (sequence[seq_index].time_ms <= now)
     {
         hardware.PrintLine("MidiFilePlayer: Playing %d, size: %d", seq_index, sequence.size());
-    
+
         auto &ev = sequence[seq_index];
-        if(ev.type == 1)
+        if (ev.type == 1)
         {
-            NoteOnEvent note = { 0, ev.note, ev.vel };
+            NoteOnEvent note = {0, ev.note, ev.vel};
             controller_->NoteOn(note);
         }
         else
         {
-            NoteOffEvent note = { 0, ev.note, ev.vel };
+            NoteOffEvent note = {0, ev.note, ev.vel};
             controller_->NoteOff(note);
         }
         seq_index++;
     }
 }
 
-
 // ------------------ MIDI Parser ------------------
-static uint32_t read_varlen(FIL* f)
+static uint32_t read_varlen(FIL *f)
 {
     uint32_t v = 0;
     uint8_t c;
     UINT br;
-    do {
+    do
+    {
         f_read(f, &c, 1, &br);
         v = (v << 7) | (c & 0x7F);
     } while (c & 0x80);
     return v;
 }
 
-bool MidiFilePlayer::LoadMidi(const char* fname)
+bool MidiFilePlayer::LoadMidi(const char *fname)
 {
-    if(f_open(&SDFile, fname, FA_READ) != FR_OK)
+    if (f_open(&SDFile, fname, FA_READ) != FR_OK)
     {
         hardware.PrintLine("Error: Cannot open file %s", fname);
         return false;
@@ -126,17 +126,18 @@ bool MidiFilePlayer::LoadMidi(const char* fname)
     memset(id, 0, 50);
 
     f_read(&SDFile, id, 4, &br);
-    if(strcmp(id, "MThd") != 0)
+    if (strcmp(id, "MThd") != 0)
     {
         f_close(&SDFile);
         hardware.PrintLine("Error: Not a valid MIDI file");
         return false;
     }
     hardware.PrintLine("MIDI open successfully");
-    
+
     // Proceed with reading events...
     f_lseek(&SDFile, 12); // skip header
-    float us_per_qn = 500000.0f; // default 120 BPM
+    // float us_per_qn = 500000.0f; // default 120 BPM
+    float us_per_qn = 700000.0f; // default 120 BPM
     int ticks_per_qn = 480;
     float ms_per_tick = (us_per_qn / 1000.0f) / ticks_per_qn;
 
@@ -147,18 +148,24 @@ bool MidiFilePlayer::LoadMidi(const char* fname)
     uint8_t running = 0;
     DWORD filesize = f_size(&SDFile);
 
-    while(f_tell(&SDFile) < filesize)
+    while (f_tell(&SDFile) < filesize)
     {
         uint32_t delta = read_varlen(&SDFile);
         abs_ticks += delta;
 
-        uint8_t status; f_read(&SDFile, &status, 1, &br);
-        if(status < 0x80) { f_lseek(&SDFile, f_tell(&SDFile)-1); status = running; }
-        else running = status;
+        uint8_t status;
+        f_read(&SDFile, &status, 1, &br);
+        if (status < 0x80)
+        {
+            f_lseek(&SDFile, f_tell(&SDFile) - 1);
+            status = running;
+        }
+        else
+            running = status;
 
         uint8_t type = status & 0xF0;
 
-        if(type == 0x90 || type == 0x80)
+        if (type == 0x90 || type == 0x80)
         {
             uint8_t note, vel;
             f_read(&SDFile, &note, 1, &br);
@@ -174,19 +181,23 @@ bool MidiFilePlayer::LoadMidi(const char* fname)
         {
             extra_events++;
             // skip data bytes
-            if(type == 0xC0 || type == 0xD0) f_lseek(&SDFile, f_tell(&SDFile)+1);
-            else if(type == 0xA0 || type == 0xB0 || type == 0xE0) f_lseek(&SDFile, f_tell(&SDFile)+2);
-            else if(status == 0xFF)
+            if (type == 0xC0 || type == 0xD0)
+                f_lseek(&SDFile, f_tell(&SDFile) + 1);
+            else if (type == 0xA0 || type == 0xB0 || type == 0xE0)
+                f_lseek(&SDFile, f_tell(&SDFile) + 2);
+            else if (status == 0xFF)
             {
                 uint8_t mt;
                 f_read(&SDFile, &mt, 1, &br);
                 uint32_t len = read_varlen(&SDFile);
                 f_lseek(&SDFile, f_tell(&SDFile) + len);
             }
-            else f_lseek(&SDFile, f_tell(&SDFile)+1);
+            else
+                f_lseek(&SDFile, f_tell(&SDFile) + 1);
         }
 
-        if (sequence.size() > 200) break;
+        if (sequence.size() > 200)
+            break;
     }
 
     f_close(&SDFile);
@@ -194,4 +205,3 @@ bool MidiFilePlayer::LoadMidi(const char* fname)
     hardware.PrintLine("Loaded %d note events, %d additional events", (int)sequence.size(), (int)extra_events);
     return true;
 }
-

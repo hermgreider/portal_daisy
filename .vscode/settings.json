@@ -2,5 +2,6 @@
     "files.associations": {
         "new": "cpp"
     },
-    "cmake.sourceDirectory": "/Users/hermgreider/Documents/Projects/Daisy/portal_daisy/daisySP"
+    "cmake.sourceDirectory": "/Users/hermgreider/Documents/Projects/Daisy/portal_daisy/daisySP",
+    "C_Cpp.errorSquiggles": "enabled"
 }
