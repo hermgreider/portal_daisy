@@ -3,20 +3,21 @@
 
 extern DaisySeed hw;
 
-void Controller::Init(Config *config) 
+void Controller::Init(Config *config)
 {
     float sample_rate = hw.AudioSampleRate();
 
     synths_ = config->synths;
-    for (Synth *synth : synths_) 
+    for (auto *synth : synths_)
     {
         synth->Init(sample_rate);
     }
 }
 
-void Controller::Update() 
+void Controller::Update()
 {
-    for (ExternalInput *input : inputs_) {
+    for (ExternalInput *input : inputs_)
+    {
         input->Update();
     }
 
@@ -25,7 +26,8 @@ void Controller::Update()
 
 void Controller::Process(float &outL, float &outR)
 {
-    if (synths_.size() == 0) return;
+    if (synths_.size() == 0)
+        return;
 
     synths_[current_synth_]->Process(outL, outR);
 }
@@ -40,13 +42,14 @@ void Controller::NoteOff(NoteOffEvent m)
     synths_[current_synth_]->NoteOff(m);
 }
 
-void Controller::DebugNote(uint8_t val, uint8_t repeat) 
+void Controller::DebugNote(uint8_t val, uint8_t repeat)
 {
-    for (uint8_t i = 0; i<repeat; i++) {
-        NoteOnEvent m = { 0, val, 127 };
+    for (uint8_t i = 0; i < repeat; i++)
+    {
+        NoteOnEvent m = {0, val, 127};
         synths_[current_synth_]->NoteOn(m);
         System::Delay(200);
-        NoteOffEvent o = { 0, val, 0 };
+        NoteOffEvent o = {0, val, 0};
         synths_[current_synth_]->NoteOff(o);
         System::Delay(500);
     }

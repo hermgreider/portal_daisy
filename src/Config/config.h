@@ -8,6 +8,7 @@
 #include "Synth/DroneSynth/drone_synth.h"
 #include "Synth/MoogySynth/moogy_synth.h"
 #include "Synth/ShakerSynth/shaker_synth.h"
+#include "Synth/PolySynth/poly_synth.h"
 
 // enum class BoardType { POD, SIMPLEFIX, SEED };
 
@@ -21,6 +22,8 @@ public:
 
   // BellSynth bellSynth;
   BellSynthModified bellSynth;
+  PolySynth<BellSynthModified, 3> polyBellSynth;
+
   // DroneSynth droneSynth;
   // MoogySynth moogySynth;
   // ShakerSynth shakerSynth;
@@ -29,6 +32,7 @@ public:
 
   // std::vector<Synth *> synths = { &droneSynth, &bellSynth };
   // std::vector<Synth *> synths = {&moogySynth};
-  std::vector<Synth *> synths = {&bellSynth};
-  // std::vector<Synth *> synths = { &shakerSynth };
+  // std::vector<Synth *> synths = {&bellSynth};
+  std::vector<Synth *> synths = {&polyBellSynth};
+  //   std::vector<Synth *> synths = { &shakerSynth };
 };

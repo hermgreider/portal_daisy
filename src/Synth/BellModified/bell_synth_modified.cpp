@@ -28,7 +28,7 @@ void BellSynthModified::Init(float sample_rate)
         envelopes_[i].Init(sample_rate);
         envelopes_[i].SetTime(ADSR_SEG_ATTACK, 0.001f);
         envelopes_[i].SetTime(ADSR_SEG_DECAY, 1.2f);
-        envelopes_[i].SetTime(ADSR_SEG_IDLE, 1.2f);
+        envelopes_[i].SetTime(ADSR_SEG_IDLE, 1.0f);
         envelopes_[i].SetTime(ADSR_SEG_RELEASE, 1.2f);
         // envelopes_[i].SetMax(1.0f);
         //  envelopes_[i].SetMin(0.0f);
@@ -153,5 +153,6 @@ void BellSynthModified::NoteOn(NoteOnEvent m)
 
 void BellSynthModified::NoteOff(NoteOffEvent m)
 {
+    hw.PrintLine("Note off");
     gate_ = false;
 }

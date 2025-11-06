@@ -4,10 +4,13 @@
 #include "daisysp.h"
 
 #include "Synth/synth.h"
+#include "Synth/PolySynth/poly_synth.h"
 #include "Synth/Util/reverbsc.h"
 
 using namespace daisy;
 using namespace daisysp;
+using NoteOnEventType = NoteOnEvent;
+using NoteOffEventType = NoteOffEvent;
 
 // TODO: When included here, Reverb takes out printing functionality (and probably other
 // stuff) - would love to have it back

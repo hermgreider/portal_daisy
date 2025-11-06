@@ -35,7 +35,7 @@ int main(void)
     hw.SetAudioBlockSize(4);
     hw.StartLog();
 
-    System::Delay(1000);
+    System::Delay(5000);
 
     hw.PrintLine("Startup");
 
