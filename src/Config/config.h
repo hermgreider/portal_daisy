@@ -21,8 +21,8 @@ public:
   //  const char* midi_fname = "PortalsInfinity.mid"; // for Bells
 
   // BellSynth bellSynth;
-  BellSynthModified bellSynth;
-  PolySynth<BellSynthModified, 3> polyBellSynth;
+  // BellSynthModified bellSynth;
+  PolySynth<MoogySynth> polySynth;
 
   // DroneSynth droneSynth;
   // MoogySynth moogySynth;
@@ -33,6 +33,6 @@ public:
   // std::vector<Synth *> synths = { &droneSynth, &bellSynth };
   // std::vector<Synth *> synths = {&moogySynth};
   // std::vector<Synth *> synths = {&bellSynth};
-  std::vector<Synth *> synths = {&polyBellSynth};
+  std::vector<Synth *> synths = {&polySynth};
   //   std::vector<Synth *> synths = { &shakerSynth };
 };
