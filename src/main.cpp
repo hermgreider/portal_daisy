@@ -65,5 +65,12 @@ int main(void)
 
         // hw.PrintLine("Loop");
         System::Delay(1);
+
+        // NoteOnEvent m = { 0, 69, 127 };
+        // controller.NoteOn(m);
+        // System::Delay(1000);
+        // NoteOffEvent o = { 0, 69, 0 };
+        // controller.NoteOff(o);
+        // System::Delay(2000);
     }
 }

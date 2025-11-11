@@ -9,8 +9,17 @@
 using namespace daisy;
 using namespace daisysp;
 
-// TODO: When included here, Reverb takes out printing functionality (and probably other 
-// stuff) - would love to have it back
+// Bell 1
+// #define BELL_TYPE 5
+// #define REVERB_MIX 0.1f  // 0.3f
+// #define REVERB_FEEDBACK 0.4f // 0.85
+// #define REVERB_LOWPASS 5000.0f // 12000.0f
+
+// Bell 2
+#define BELL_TYPE 1
+#define REVERB_MIX 0.3f
+#define REVERB_FEEDBACK 0.7f // 0.85
+#define REVERB_LOWPASS 10000.0f // 12000.0f
 
 class BellSynth : public Synth {
   public:
@@ -44,7 +53,7 @@ class BellSynth : public Synth {
     AdEnv envelopes_[kNumPartials];
     ReverbSc reverb_;
 
-    int bell_type_ = 0;
+    int bell_type_ = BELL_TYPE;
     float base_freq_ = 880.0f; // A5
     float reverb_mix_ = 0.3f;
 

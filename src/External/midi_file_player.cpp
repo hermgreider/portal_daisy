@@ -46,7 +46,12 @@ void MidiFilePlayer::Init(Controller *controller)
 
     // Mount SD Card
     /** mount the filesystem to the root directory */
-    f_mount(&fsi.GetSDFileSystem(), "/", 1);
+    if (f_mount(&fsi.GetSDFileSystem(), "/", 1) != FR_OK) 
+    {
+        hardware.PrintLine("MidiFilePlayer: Could not mount / filesystem");
+        return;
+    }
+    hardware.PrintLine("MidiFilePlayer: Mount complete");
 
     if (LoadMidi(config.midi_fname)) 
     {
@@ -113,6 +118,7 @@ static uint32_t read_varlen(FIL* f)
 
 bool MidiFilePlayer::LoadMidi(const char* fname)
 {
+    hardware.PrintLine("Ready to open file %s", fname);
     if(f_open(&SDFile, fname, FA_READ) != FR_OK)
     {
         hardware.PrintLine("Error: Cannot open file %s", fname);

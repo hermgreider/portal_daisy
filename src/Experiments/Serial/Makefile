@@ -10,8 +10,8 @@ LDFLAGS += -u _printf_float
 CPP_SOURCES = main.cpp 
 
 # Library Locations
-LIBDAISY_DIR = ../../libDaisy
-DAISYSP_DIR = ../../DaisySP
+LIBDAISY_DIR = ../../../libDaisy
+DAISYSP_DIR = ../../../DaisySP
 
 # Core location, and generic makefile.
 SYSTEM_FILES_DIR = $(LIBDAISY_DIR)/core

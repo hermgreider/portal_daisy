@@ -44,10 +44,10 @@ void DroneSynth::InitVoice(Voice &v)
     v.filter.SetRes(0.5f);
 
     v.env.Init(samplerate);
-    v.env.SetTime(ADSR_SEG_ATTACK, 2.0f);
+    v.env.SetTime(ADSR_SEG_ATTACK, 0.2f);
     v.env.SetTime(ADSR_SEG_DECAY, 0.5f);
-    v.env.SetSustainLevel(0.8f);
-    v.env.SetTime(ADSR_SEG_RELEASE, 3.0f);
+    v.env.SetSustainLevel(0.2f);
+    v.env.SetTime(ADSR_SEG_RELEASE, 0.3f);
 }
 
 float DroneSynth::randWalk(float &val, float amt, float range) 
@@ -79,7 +79,7 @@ void DroneSynth::Process(float &outL, float &outR)
 
         float sig = voice.osc1.Process() + voice.osc2.Process() + voice.subOsc.Process();
 
-        float cutoff = fminf(fmaxf(lfo_cutoff, 80.0f), 8000.0f);
+        float cutoff = fminf(fmaxf(lfo_cutoff, 80.0f), 4000.0f);
         voice.filter.SetFreq(cutoff);
         float filtered = tanh(voice.filter.Process(sig) * 1.5f);
 
@@ -92,7 +92,7 @@ void DroneSynth::Process(float &outL, float &outR)
 
 void DroneSynth::SetCutoffBase(float val) 
 {
-    cutoff_base = fminf(fmaxf(val, 100.0f), 8000.0f);
+    cutoff_base = fminf(fmaxf(val, 100.0f), 4000.0f);
 }
 
 void DroneSynth::AdjustCutoff(float delta) 

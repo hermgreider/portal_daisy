@@ -36,8 +36,8 @@ void BellSynth::Init(float sample_rate)
     }
 
     reverb_.Init(sample_rate);
-    reverb_.SetFeedback(0.85f);
-    reverb_.SetLpFreq(12000.0f);
+    reverb_.SetFeedback(REVERB_FEEDBACK);
+    reverb_.SetLpFreq(REVERB_LOWPASS);
 
     hw.PrintLine("BellSynth: Init complete");
 }
