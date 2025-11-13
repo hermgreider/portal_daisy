@@ -59,11 +59,11 @@ Config config = {
 MoogySynth2 synth;
 Config config = { 
   &synth, 
-  "PortalsFireflies.mid", 
-  1000000.0f,  // default 60 BPM
-  1,          // octaves_adjust
-  40,          // range_min
-  65,          // range_max
+  "PortalsInfinity.mid", 
+  500000.0f,   // default 120 BPM
+  0,           // octaves_adjust
+  35,          // range_min
+  127,         // range_max
   0,           // bell_type
   0, 0, 0, 0,  // shaker
   fallback_sequence

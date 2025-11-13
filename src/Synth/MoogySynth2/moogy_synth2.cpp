@@ -53,13 +53,13 @@ void MoogySynth2::InitVoice(Voice &v)
     v.amp_env.SetTime(ADSR_SEG_ATTACK, 0.05f);
     v.amp_env.SetTime(ADSR_SEG_DECAY, 0.5f);
     v.amp_env.SetSustainLevel(0.6f);
-    v.amp_env.SetTime(ADSR_SEG_RELEASE, 0.3f);
+    v.amp_env.SetTime(ADSR_SEG_RELEASE, 0.8f);
 
     v.filter_env.Init(samplerate);
     v.filter_env.SetTime(ADSR_SEG_ATTACK, 0.1f);
     v.filter_env.SetTime(ADSR_SEG_DECAY, 0.2f);
     v.filter_env.SetSustainLevel(0.3f);
-    v.filter_env.SetTime(ADSR_SEG_RELEASE, 0.3f);
+    v.filter_env.SetTime(ADSR_SEG_RELEASE, 0.8f);
 }
 
 float MoogySynth2::randWalk(float &val, float amt, float range) 
@@ -154,9 +154,7 @@ static int foldNoteToRange(int note, int minNote, int maxNote)
 
 void MoogySynth2::Voice::NoteOn(int midinote)
 {
-    // note = changeOctave(midinote, config.octave_adjust);
-    // note = foldNoteToRange(note, config.range_min, config.range_max);
-
+    note = changeOctave(midinote, config.octave_adjust);
     note = foldNoteToRange(midinote, config.range_min, config.range_max);
 
     hw.PrintLine("Moogy NoteOn: %d, fixed: %d", midinote, note);
@@ -167,6 +165,8 @@ void MoogySynth2::Voice::NoteOn(int midinote)
 
 void MoogySynth2::Voice::NoteOff(int midinote)
 {
+    note = changeOctave(midinote, config.octave_adjust);
+    note = foldNoteToRange(midinote, config.range_min, config.range_max);
     if(note == midinote)
     {
         active = false;
