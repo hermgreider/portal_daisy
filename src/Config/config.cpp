@@ -16,9 +16,10 @@ std::vector<MyMidiEvent> fallback_sequence = {
 // Pick configuration by uncommenting one of these
 // #define PANE1_BELL
 // #define PANE8_BELL
-#define PANE6_MOOGY_BASS
+// #define PANE6_MOOGY_BASS
 // #define PANE8_SHAKER
 // #define PANE4_SHAKER
+#define MOOGY_BASS_NO_SD
 
 #ifdef PANE1_BELL_SYNTH
 
@@ -98,6 +99,22 @@ Config config = {
   0.015f, 0.06f, 6000.0f, 1, // shaker attack, decay, freq, filter_type (high)
   fallback_sequence
 };
+
+#elif defined(MOOGY_BASS_NO_SD)
+
+MoogySynth2 synth;
+Config config = { 
+  &synth, 
+  "", 
+  500000.0f,   // default 120 BPM
+  0,           // octaves_adjust
+  0,           // range_min
+  127,         // range_max
+  0,           // bell_type
+  0, 0, 0, 0,  // shaker
+  fallback_sequence
+};
+
 
 #endif
 
