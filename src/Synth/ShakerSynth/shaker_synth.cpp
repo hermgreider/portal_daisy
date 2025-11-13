@@ -1,7 +1,18 @@
-// === drone_synth.cpp ===
+#include "Config/config.h"
 #include "shaker_synth.h"
 
 extern DaisySeed hw;
+extern Config config;
+
+// static const float attack = 0.002f;
+// static const float decay = 0.06f;
+// static const float freq = 4000.f;
+// static const float filter_type = 0; // band
+
+// static const float attack = 0.015f;
+// static const float decay = 0.06f;
+// static const float freq = 6000.f;
+// static const float filter_type = 1; // high
 
 void ShakerSynth::Init(float sr) 
 {
@@ -10,15 +21,14 @@ void ShakerSynth::Init(float sr)
     filter.Init(sr);
 
     // Envelope: quick attack, short decay
-    env.SetTime(ADENV_SEG_ATTACK, 0.002f);  // 2 ms
-    env.SetTime(ADENV_SEG_DECAY, 0.06f);    // 60 ms
+    env.SetTime(ADENV_SEG_ATTACK, config.shaker_attack);
+    env.SetTime(ADENV_SEG_DECAY, config.shaker_decay);
     env.SetMax(1.0f);
     env.SetMin(0.0f);
     env.SetCurve(0.5f);                     // Slight exponential
 
-    // Bandpass filter ~6kHz, moderate Q
-    filter.SetFreq(6000.0f);
-    filter.SetRes(1.2f);
+    filter.SetFreq(config.shaker_freq);
+    filter.SetRes(0.0f); //1.2f
 
     reverb.Init(sr);
     reverb.SetFeedback(0.8f);
@@ -39,9 +49,13 @@ void ShakerSynth::Process(float &outL, float &outR)
     // Generate white noise
     sig = noise.Process() * env_out;
 
-    // Bandpass filter for shaker tone
+    // Bandpass filter = 0
     filter.Process(sig);
-    filt_out = filter.Band();
+    if (config.shaker_filter_type == 0)
+        filt_out = filter.Band();
+    else {
+        filt_out = filter.High();
+    }
 
     reverb.Process(filt_out * 0.5f, filt_out * 0.5f, &wetL, &wetR);
 

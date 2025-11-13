@@ -1,6 +1,10 @@
 // === drone_synth.cpp ===
-#include "moogy_synth.h"
 #include <cmath>
+#include "Config/config.h"
+#include "moogy_synth.h"
+
+extern DaisySeed hw;
+extern Config config;
 
 extern DaisySeed hw;
 
@@ -144,9 +148,16 @@ static int foldNoteToRange(int note, int minNote, int maxNote)
     return transposed;
 }
 
+static int changeOctave(int note, int octave_adjust)
+{
+    int transposed = note + 12 * config.octave_adjust;
+    return transposed;
+}
+
 void MoogySynth::Voice::NoteOn(int midinote)
 {
-    note = foldNoteToRange(midinote, 55, 100);
+    uint8_t note = changeOctave(midinote, config.octave_adjust);
+    note = foldNoteToRange(note, 55, 100);
 
     hw.PrintLine("Moogy NoteOn: %d, fixed: %d", midinote, note);
 

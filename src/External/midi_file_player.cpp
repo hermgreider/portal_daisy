@@ -4,6 +4,7 @@
 #include "fatfs.h"
 #include "Config/config.h"
 #include "Init/controller.h"
+#include "midi_event.h"
 #include "midi_file_player.h"
 
 using namespace daisy;
@@ -17,15 +18,6 @@ DSY_TEXT FIL            SDFile;
 DSY_TEXT FatFSInterface fsi;
 SdmmcHandler   sd;
 
-// ------------------ MIDI Event ------------------
-struct MyMidiEvent
-{
-    uint32_t time_ms;
-    uint8_t type; // 1=NoteOn, 0=NoteOff
-    uint8_t note;
-    uint8_t vel;
-};
-
 DSY_TEXT std::vector<MyMidiEvent> sequence;
 size_t seq_index = 0;
 uint32_t start_time_ms = 0;
@@ -33,6 +25,11 @@ uint32_t start_time_ms = 0;
 void MidiFilePlayer::Init(Controller *controller)
 {
     controller_ = controller;
+
+    if (config.midi_fname == "") {
+        LoadSequence(config.fallback_sequence);
+        return;
+    }
 
     // Init SD Card
     SdmmcHandler::Config sd_cfg;
@@ -116,10 +113,10 @@ static uint32_t read_varlen(FIL* f)
     return v;
 }
 
-bool MidiFilePlayer::LoadMidi(const char* fname)
+bool MidiFilePlayer::LoadMidi(std::string fname)
 {
     hardware.PrintLine("Ready to open file %s", fname);
-    if(f_open(&SDFile, fname, FA_READ) != FR_OK)
+    if(f_open(&SDFile, fname.c_str(), FA_READ) != FR_OK)
     {
         hardware.PrintLine("Error: Cannot open file %s", fname);
         return false;
@@ -142,7 +139,7 @@ bool MidiFilePlayer::LoadMidi(const char* fname)
     
     // Proceed with reading events...
     f_lseek(&SDFile, 12); // skip header
-    float us_per_qn = 500000.0f; // default 120 BPM
+    float us_per_qn = config.us_per_qn; 
     int ticks_per_qn = 480;
     float ms_per_tick = (us_per_qn / 1000.0f) / ticks_per_qn;
 
@@ -201,3 +198,18 @@ bool MidiFilePlayer::LoadMidi(const char* fname)
     return true;
 }
 
+/**
+ * Load MidiEvents from a vector. This is good for fallback or if there's no SD card.
+ */
+bool MidiFilePlayer::LoadSequence(std::vector<MyMidiEvent> events)
+{
+    hardware.PrintLine("Ready to load MIDI events");
+
+    for (MyMidiEvent event : events) 
+    {
+        sequence.push_back(event);
+    }
+
+    hardware.PrintLine("Loaded %d note events", (int)sequence.size());
+    return true;
+}

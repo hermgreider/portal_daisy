@@ -1,6 +1,8 @@
+#include "Config/config.h"
 #include "bell_synth.h"
 
 extern DaisySeed hw;
+extern Config config;
 
 const float BellSynth::ratios_[BellSynth::kNumTypes][BellSynth::kNumPartials] = {
     {1.0f, 2.7f, 3.9f, 5.4f},
@@ -23,6 +25,8 @@ const float BellSynth::amps_[BellSynth::kNumTypes][BellSynth::kNumPartials] = {
 
 void BellSynth::Init(float sample_rate)
 {
+    bell_type_ = config.bell_type;
+
     for (int i = 0; i < kNumPartials; i++)
     {
         partials_[i].Init(sample_rate);
@@ -131,9 +135,16 @@ static int foldNoteToRange(int note, int minNote, int maxNote)
     return transposed;
 }
 
+static int changeOctave(int note, int octave_adjust)
+{
+    int transposed = note + 12 * config.octave_adjust;
+    return transposed;
+}
+
 void BellSynth::NoteOn(NoteOnEvent m)
 {
-    uint8_t note = foldNoteToRange(m.note, 40, 92);
+    uint8_t note = changeOctave(m.note, config.octave_adjust);
+    note = foldNoteToRange(note, config.range_min, config.range_max);
 
     hw.PrintLine("BellSynth NoteOn: %d, fixed: %d, vel: %d", m.note, note, m.velocity);
 

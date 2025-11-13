@@ -1,13 +1,14 @@
 #include "daisy_seed.h"
 #include "daisysp.h"
 
+#include "Config/config.h"
 #include "External/midi_input.h"
 #include "External/midi_file_player.h"
 #include "Init/controller.h"
 
 using namespace daisy;
 
-Config config;
+extern Config config;
 Controller controller;
 // MidiInput midiInput;
 MidiFilePlayer midiFilePlayer;
@@ -39,7 +40,7 @@ int main(void)
 
     hw.PrintLine("Startup");
 
-    controller.Init(&config);
+    controller.Init();
 
     hw.StartAudio(AudioCallback);
     System::Delay(500);

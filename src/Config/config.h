@@ -1,32 +1,36 @@
 #pragma once
 
+#include <string>
 #include <vector>
-
+#include "daisy_seed.h"
 #include "Synth/synth.h"
-#include "Synth/Bell/bell_synth.h"
-#include "Synth/MoogySynth/moogy_synth.h"
-#include "Synth/MoogySynth2/moogy_synth2.h"
-#include "Synth/ShakerSynth/shaker_synth.h"
+#include "External/midi_event.h"
 
-// enum class BoardType { POD, SIMPLEFIX, SEED };
+using namespace daisy;
 
-struct Config {
+class Config {
 public:
-  const char* midi_fname = "PortalsAirways.mid"; // for Bells
-  // const char* midi_fname = "Portals_Brass5.mid"; // for Moogy
-  // const char* midi_fname = "PortalsShaker.mid"; // for Shaker
-  // const char* midi_fname = "PortalsInfinity.mid"; // for low Bells
-  // const char* midi_fname = "PortalsFireflies.mid";
+  Synth *synth;
+  std::string midi_fname;
 
-  BellSynth bellSynth;
-  // MoogySynth moogySynth;
-  // MoogySynth2 moogySynth2;
-  // ShakerSynth shakerSynth;
+  float us_per_qn;
 
-  // BoardType boardType = BoardType::SEED; 
+  // integer - 0 = no change, 1 = 1 octave up, 2 = 2 octaves up, -1 = one octave down
+  int8_t octave_adjust;
 
-  // std::vector<Synth *> synths = { &moogySynth };
-  // std::vector<Synth *> synths = { &moogySynth2 };
-  std::vector<Synth *> synths = { &bellSynth };
-  // std::vector<Synth *> synths = { &shakerSynth };
+  uint8_t range_min;
+  uint8_t range_max;
+
+  // BellSynth only
+  uint8_t bell_type;
+
+  // ShakerSynth Only
+  float shaker_attack;
+  float shaker_decay;
+  float shaker_freq;
+  float shaker_filter_type;
+
+  // Sequence to use if no file
+  std::vector<MyMidiEvent> fallback_sequence;
 };
+

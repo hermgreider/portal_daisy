@@ -1,8 +1,10 @@
-// === drone_synth.cpp ===
-#include "moogy_synth2.h"
+// === moogy_synth2.cpp ===
 #include <cmath>
+#include "Config/config.h"
+#include "moogy_synth2.h"
 
 extern DaisySeed hw;
+extern Config config;
 
 void MoogySynth2::Init(float sr) 
 {
@@ -133,6 +135,12 @@ void MoogySynth2::NoteOff(NoteOffEvent m)
     }
 }
 
+static int changeOctave(int note, int octave_adjust)
+{
+    int transposed = note + 12 * config.octave_adjust;
+    return transposed;
+}
+
 static int foldNoteToRange(int note, int minNote, int maxNote)
 {
     // Shift up or down by 12s to land in the right octave
@@ -146,7 +154,10 @@ static int foldNoteToRange(int note, int minNote, int maxNote)
 
 void MoogySynth2::Voice::NoteOn(int midinote)
 {
-    note = foldNoteToRange(midinote, 45, 90);
+    // note = changeOctave(midinote, config.octave_adjust);
+    // note = foldNoteToRange(note, config.range_min, config.range_max);
+
+    note = foldNoteToRange(midinote, config.range_min, config.range_max);
 
     hw.PrintLine("Moogy NoteOn: %d, fixed: %d", midinote, note);
 

@@ -6,16 +6,17 @@ APP_TYPE = BOOT_SRAM
 # USE_DAISYSP_LGPL = 1
 LDFLAGS += -u _printf_float
 
-# src/Synth/StringSynth/string_synth.cpp \
 # src/Synth/StringSynth/drone_synth.cpp \
 
 # Sources
 CPP_SOURCES += \
 src/External/ff_lfn_stub.cpp \
 src/Init/controller.cpp \
+src/Config/config.cpp \
 src/External/midi_input.cpp \
 src/Synth/MoogySynth/moogy_synth.cpp \
 src/Synth/MoogySynth2/moogy_synth2.cpp \
+src/Synth/StringSynth/string_synth.cpp \
 src/Synth/Bell/bell_synth.cpp \
 src/Synth/SimpleBell/simple_bell_synth.cpp \
 src/Synth/ShakerSynth/shaker_synth.cpp \

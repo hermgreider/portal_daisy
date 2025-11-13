@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <string.h>
+#include <vector>
 #include "daisy_seed.h"
 #include "external_input.h"
 
@@ -18,7 +20,8 @@ class MidiFilePlayer : ExternalInput
     void Update();
 
   private:
-    bool LoadMidi(const char* fname);
+    bool LoadMidi(std::string fname);
+    bool LoadSequence(std::vector<MyMidiEvent> events);
     void HandleMidiMessage(MidiEvent m);
 
     Controller *controller_;

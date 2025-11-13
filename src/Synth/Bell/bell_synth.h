@@ -9,17 +9,15 @@
 using namespace daisy;
 using namespace daisysp;
 
-// Bell 1
-// #define BELL_TYPE 5
-// #define REVERB_MIX 0.1f  // 0.3f
-// #define REVERB_FEEDBACK 0.4f // 0.85
-// #define REVERB_LOWPASS 5000.0f // 12000.0f
-
-// Bell 2
-#define BELL_TYPE 1
-#define REVERB_MIX 0.3f
+// Bell 1 - type 5
+#define REVERB_MIX 0.6f  // 0.3f
 #define REVERB_FEEDBACK 0.7f // 0.85
-#define REVERB_LOWPASS 10000.0f // 12000.0f
+#define REVERB_LOWPASS 5000.0f // 12000.0f
+
+// Bell 2 - type 1
+// #define REVERB_MIX 1.0f
+// #define REVERB_FEEDBACK 0.7f // 0.85
+// #define REVERB_LOWPASS 10000.0f // 12000.0f
 
 class BellSynth : public Synth {
   public:
@@ -53,7 +51,7 @@ class BellSynth : public Synth {
     AdEnv envelopes_[kNumPartials];
     ReverbSc reverb_;
 
-    int bell_type_ = BELL_TYPE;
+    int bell_type_ = 0;
     float base_freq_ = 880.0f; // A5
     float reverb_mix_ = 0.3f;
 

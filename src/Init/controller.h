@@ -4,14 +4,13 @@
 #include <vector>
 
 #include "Synth/synth.h"
-#include "Config/config.h"
 #include "External/external_input.h"
 
 using namespace daisy;
 
 class Controller {
   public:
-    void Init(Config *config);
+    void Init();
 
     // Called from main loop (~1KHz)
     void Update();
@@ -32,9 +31,5 @@ class Controller {
     void Incr();
 
   private:
-    uint8_t current_synth_ = 0;
-
     std::vector<ExternalInput*> inputs_;
-    std::vector<Synth*> synths_;
-    Synth *debugSynth;
 };
