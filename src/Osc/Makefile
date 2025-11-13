@@ -4,7 +4,8 @@ TARGET = Osc
 APP_TYPE = BOOT_SRAM
 
 # Sources
-CPP_SOURCES = Osc.cpp
+//CPP_SOURCES = Osc.cpp
+CPP_SOURCES = Osc_Serial.cpp
 
 # Library Locations
 LIBDAISY_DIR = ../../libDaisy
