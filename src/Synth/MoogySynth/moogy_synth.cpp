@@ -156,8 +156,8 @@ static int changeOctave(int note, int octave_adjust)
 
 void MoogySynth::Voice::NoteOn(int midinote)
 {
-    uint8_t note = changeOctave(midinote, config.octave_adjust);
-    note = foldNoteToRange(note, 55, 100);
+    note = changeOctave(midinote, config.octave_adjust);
+    note = foldNoteToRange(midinote, config.range_min, config.range_max);
 
     hw.PrintLine("Moogy NoteOn: %d, fixed: %d", midinote, note);
 
@@ -167,6 +167,8 @@ void MoogySynth::Voice::NoteOn(int midinote)
 
 void MoogySynth::Voice::NoteOff(int midinote)
 {
+    note = changeOctave(midinote, config.octave_adjust);
+    note = foldNoteToRange(midinote, config.range_min, config.range_max);
     if(note == midinote)
     {
         active = false;

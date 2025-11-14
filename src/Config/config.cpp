@@ -21,10 +21,13 @@ std::vector<MyMidiEvent> fallback_sequence = {
 // Pick configuration by uncommenting one of these
 // #define PANE1_BELL
 // #define PANE8_BELL
-// #define PANE6_MOOGY_BASS
-// #define PANE8_SHAKER
+#define PANE6_MOOGY_BASS
+// #define PANE8_TALL_SHAKER
 // #define PANE4_SHAKER
-#define MOOGY_BASS_NO_SD
+// #define PANE4_MOOGY
+// #define PANE4_HORIZ_MOOGY
+// #define MOOGY_BASS_NO_SD
+// #define STRING_TEST
 
 #ifdef PANE1_BELL_SYNTH
 
@@ -60,22 +63,20 @@ Config config = {
 
 #elif defined(PANE6_MOOGY_BASS)
 
-// TODO: This one was closed. Not reprogrammed yet.
-
 MoogySynth2 synth;
 Config config = { 
   &synth, 
   "PortalsInfinity.mid", 
   500000.0f,   // default 120 BPM
   0,           // octaves_adjust
-  35,          // range_min
+  45,          // range_min
   127,         // range_max
   0,           // bell_type
   0, 0, 0, 0,  // shaker
   fallback_sequence
 };
 
-#elif defined(PANE8_SHAKER)
+#elif defined(PANE8_TALL_SHAKER)
 
 ShakerSynth synth;
 Config config = { 
@@ -105,6 +106,23 @@ Config config = {
   fallback_sequence
 };
 
+#elif defined(PANE4_MOOGY)
+
+// TODO: This one was closed. Not reprogrammed yet.
+
+MoogySynth synth;
+Config config = { 
+  &synth, 
+  "Portals_Brass5.mid", 
+  500000.0f,   // default 120 BPM
+  0,           // octaves_adjust
+  55,          // range_min
+  95,          // range_max
+  0,           // bell_type
+  0, 0, 0, 0,  // shaker
+  fallback_sequence
+};
+
 #elif defined(MOOGY_BASS_NO_SD)
 
 MoogySynth2 synth;
@@ -119,6 +137,24 @@ Config config = {
   0, 0, 0, 0,  // shaker
   fallback_sequence
 };
+
+#elif defined(STRING_TEST)
+
+// TODO: This one was closed. Not reprogrammed yet.
+
+StringSynth synth;
+Config config = { 
+  &synth, 
+  "Portals_Brass5.mid", 
+  500000.0f,   // default 120 BPM
+  0,           // octaves_adjust
+  55,          // range_min
+  95,          // range_max
+  0,           // bell_type
+  0, 0, 0, 0,  // shaker
+  fallback_sequence
+};
+
 
 
 #endif
