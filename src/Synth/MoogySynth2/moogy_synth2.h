@@ -22,6 +22,8 @@ class MoogySynth2 : public Synth {
     void Select2();
     void Select3();
 
+    void Mod2(float value);
+
     void Process(float &outL, float &outR);
 
     void NoteOn(NoteOnEvent m);
@@ -55,6 +57,7 @@ class MoogySynth2 : public Synth {
 
     Oscillator lfo;
     float cutoff_base;
+    float current_res; // temp for printing
     float lfo_cutoff;
     float samplerate;
 

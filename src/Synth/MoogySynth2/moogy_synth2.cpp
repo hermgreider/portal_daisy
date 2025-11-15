@@ -6,10 +6,17 @@
 extern DaisySeed hw;
 extern Config config;
 
+const float cutoffMin = 1000.0f;
+const float cutoffMax = 6000.0f;
+const float resMin = 0.1f;
+const float resMax = 0.8f;
+
 void MoogySynth2::Init(float sr)
 {
+    current_res = resMin; // print only
+
     samplerate = sr;
-    cutoff_base = 1500.0f;
+    cutoff_base = cutoffMax;
 
     lfo.Init(sr);
     lfo.SetFreq(0.05f);
@@ -32,14 +39,24 @@ void MoogySynth2::InitVoices()
     }
 }
 
-void Synth::Mod2(float val)
+void MoogySynth2::Mod2(float val)
 {
-    float scale = val;
+    // Val is between 0 and 1
+
+    float curved = powf(val, 2.0f); // exponential
+
+    // Set values between min and max - note that Resonance and cutoff go in opposite directions
+    float res = resMin + (resMax - resMin) * (1.0f - curved);
+    float cutoff = cutoffMin + (cutoffMax - cutoffMin) * curved;
+    SetCutoffBase(cutoff);
+
+    current_res = res; // print only
+    // hw.PrintLine("Moogy2::Mod2, val %f, cutoff %f, res %f ", val, cutoff_base, res);
 
     for (int v = 0; v < kNumVoices; ++v)
     {
         Voice &voice = voices[v];
-        voice.filter.SetRes(cutoff_base * (env_f_out * voice.filter_amount) * (1.0f - voice.follow) * scale);
+        voice.filter.SetRes(res);
     }
 }
 
@@ -58,7 +75,7 @@ void MoogySynth2::InitVoice(Voice &v)
     v.subOsc.SetWaveform(Oscillator::WAVE_TRI);
 
     v.filter.Init(samplerate);
-    v.filter.SetRes(0.1f);
+    v.filter.SetRes(resMin);
     v.filter_amount = 1.0;
 
     v.amp_env.Init(samplerate);
@@ -121,7 +138,7 @@ void MoogySynth2::Process(float &outL, float &outR)
 
 void MoogySynth2::SetCutoffBase(float val)
 {
-    cutoff_base = fminf(fmaxf(val, 100.0f), 8000.0f);
+    cutoff_base = fminf(fmaxf(val, 100.0f), cutoffMax);
 }
 
 void MoogySynth2::AdjustCutoff(float delta)
@@ -138,6 +155,8 @@ void MoogySynth2::NoteOn(NoteOnEvent m)
 {
     voices[current_voice].NoteOn(m.note);
     current_voice = (current_voice + 1) % kNumVoices;
+    
+    // hw.PrintLine("Moogy2::NoteOn, cutoff %f, res %f ", cutoff_base, current_res);
 }
 
 void MoogySynth2::NoteOff(NoteOffEvent m)

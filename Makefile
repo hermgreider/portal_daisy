@@ -23,6 +23,7 @@ src/Synth/ShakerSynth/shaker_synth.cpp \
 src/Synth/Util/reverbsc.cpp \
 src/Synth/Util/moogladder.cpp \
 src/External/midi_file_player.cpp \
+src/External/serial_input.cpp \
 src/main.cpp 
 
 # Library Locations

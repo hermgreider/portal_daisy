@@ -30,11 +30,12 @@ void SerialInput::Update()
     // handle Serial
     if (uart.BlockingReceive(&rx_byte, 1, 10) == UartHandler::Result::OK)
     {
-        // Example: interpret incoming byte
-        scale = rx_byte / 255.0f;
-        scale = powf(2.0f, (scale - 0.5f) * 2.0f); // exponential
+        if (rx_byte == 0) return;
 
-        // hw.PrintLine("Output %d", scale);
+        // Example: interpret incoming byte
+        scale = static_cast<float>(rx_byte) / 255.0f;
+
+        // hw.PrintLine("Received %x %d, scale %f", rx_byte, rx_byte, scale);
         controller_->Mod2(scale);
     }
 }

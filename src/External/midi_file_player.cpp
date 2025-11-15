@@ -82,16 +82,16 @@ void MidiFilePlayer::Update()
 
     if (sequence[seq_index].time_ms <= now)
     {
-        hardware.PrintLine("MidiFilePlayer: Playing %d, size: %d", seq_index, sequence.size());
-    
         auto &ev = sequence[seq_index];
         if(ev.type == 1)
         {
+            hardware.PrintLine("MidiFilePlayer: NoteOn %d, size: %d", seq_index, sequence.size());
             NoteOnEvent note = { 0, ev.note, ev.vel };
             controller_->NoteOn(note);
         }
         else
         {
+            hardware.PrintLine("MidiFilePlayer: NoteOff %d, size: %d", seq_index, sequence.size());
             NoteOffEvent note = { 0, ev.note, ev.vel };
             controller_->NoteOff(note);
         }
