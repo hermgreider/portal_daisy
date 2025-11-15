@@ -1,6 +1,10 @@
-// === string_synth.cpp ===
-#include "string_synth.h"
+// === drone_synth.cpp ===
 #include <cmath>
+#include "Config/config.h"
+#include "string_synth.h"
+
+extern DaisySeed hw;
+extern Config config;
 
 extern DaisySeed hw;
 
@@ -144,9 +148,16 @@ static int foldNoteToRange(int note, int minNote, int maxNote)
     return transposed;
 }
 
+static int changeOctave(int note, int octave_adjust)
+{
+    int transposed = note + 12 * config.octave_adjust;
+    return transposed;
+}
+
 void StringSynth::Voice::NoteOn(int midinote)
 {
-    note = foldNoteToRange(midinote, 55, 100);
+    note = changeOctave(midinote, config.octave_adjust);
+    note = foldNoteToRange(midinote, config.range_min, config.range_max);
 
     hw.PrintLine("String NoteOn: %d, fixed: %d", midinote, note);
 
@@ -156,6 +167,8 @@ void StringSynth::Voice::NoteOn(int midinote)
 
 void StringSynth::Voice::NoteOff(int midinote)
 {
+    note = changeOctave(midinote, config.octave_adjust);
+    note = foldNoteToRange(midinote, config.range_min, config.range_max);
     if(note == midinote)
     {
         active = false;
