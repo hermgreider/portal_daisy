@@ -6,10 +6,10 @@
 extern DaisySeed hw;
 extern Config config;
 
-const float cutoffMin = 1000.0f;
+const float cutoffMin = 2000.0f;
 const float cutoffMax = 6000.0f;
 const float resMin = 0.1f;
-const float resMax = 0.8f;
+const float resMax = 0.4f;
 
 void MoogySynth2::Init(float sr)
 {
@@ -47,7 +47,7 @@ void MoogySynth2::Mod2(float val)
 
     // Set values between min and max - note that Resonance and cutoff go in opposite directions
     float res = resMin + (resMax - resMin) * (1.0f - curved);
-    float cutoff = cutoffMin + (cutoffMax - cutoffMin) * curved;
+    float cutoff = cutoffMin + (cutoffMax - cutoffMin) * (1.0f - curved);
     SetCutoffBase(cutoff);
 
     current_res = res; // print only
