@@ -3,6 +3,7 @@
 
 #include "Config/config.h"
 #include "External/midi_input.h"
+#include "External/serial_input.h"
 #include "External/midi_file_player.h"
 #include "Init/controller.h"
 
@@ -12,6 +13,7 @@ extern Config config;
 Controller controller;
 // MidiInput midiInput;
 MidiFilePlayer midiFilePlayer;
+SerialInput serialInput;
 
 DaisySeed hw;
 
@@ -51,6 +53,7 @@ int main(void)
 
     // Initialize Midi -- TODO: where should this go? Controller?
     // midiInput.Init(&controller);
+    serialInput.Init(&controller);
     midiFilePlayer.Init(&controller);
 
     controller.DebugNote(69, 3);
@@ -63,6 +66,7 @@ int main(void)
         controller.Update();
         // midiInput.Update(); // TODO: Move this
         midiFilePlayer.Update();
+        serialInput.Update();
 
         // hw.PrintLine("Loop");
         System::Delay(1);

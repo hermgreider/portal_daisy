@@ -6,7 +6,7 @@
 extern DaisySeed hw;
 extern Config config;
 
-void MoogySynth2::Init(float sr) 
+void MoogySynth2::Init(float sr)
 {
     samplerate = sr;
     cutoff_base = 1500.0f;
@@ -19,19 +19,31 @@ void MoogySynth2::Init(float sr)
     InitVoices();
 }
 
-void MoogySynth2::Update() {}    
+void MoogySynth2::Update() {}
 void MoogySynth2::Select1() {}
 void MoogySynth2::Select2() {}
 void MoogySynth2::Select3() {}
 
-void MoogySynth2::InitVoices() 
+void MoogySynth2::InitVoices()
 {
-    for (int i = 0; i < kNumVoices; ++i) {
+    for (int i = 0; i < kNumVoices; ++i)
+    {
         InitVoice(voices[i]);
     }
 }
 
-void MoogySynth2::InitVoice(Voice &v) 
+void Synth::Mod2(float val)
+{
+    float scale = val;
+
+    for (int v = 0; v < kNumVoices; ++v)
+    {
+        Voice &voice = voices[v];
+        voice.filter.SetRes(cutoff_base * (env_f_out * voice.filter_amount) * (1.0f - voice.follow) * scale);
+    }
+}
+
+void MoogySynth2::InitVoice(Voice &v)
 {
     v.freq = 0;
     v.drift1 = v.drift2 = v.driftSub = 0.0f;
@@ -62,7 +74,7 @@ void MoogySynth2::InitVoice(Voice &v)
     v.filter_env.SetTime(ADSR_SEG_RELEASE, 0.8f);
 }
 
-float MoogySynth2::randWalk(float &val, float amt, float range) 
+float MoogySynth2::randWalk(float &val, float amt, float range)
 {
     val += (rand() / (float)RAND_MAX - 0.5f) * amt;
     val = fminf(fmaxf(val, -range), range);
@@ -74,7 +86,8 @@ void MoogySynth2::Process(float &outL, float &outR)
     float mix = 0.0f;
     lfo_cutoff = cutoff_base + (lfo.Process() * 300.0f);
 
-    for (int v = 0; v < kNumVoices; ++v) {
+    for (int v = 0; v < kNumVoices; ++v)
+    {
         Voice &voice = voices[v];
 
         float d1 = randWalk(voice.drift1, 0.00001f, 0.02f);
@@ -93,12 +106,12 @@ void MoogySynth2::Process(float &outL, float &outR)
 
         float env_f_out = voice.filter_env.Process(voice.active);
 
-		voice.follow = 1.0f - (float (voice.note)/84.0f);	
+        voice.follow = 1.0f - (float(voice.note) / 84.0f);
 
-    	voice.filter.SetFreq(cutoff_base * 
-            (env_f_out * voice.filter_amount) * 
-            (1.0f - voice.follow));
-		float filter_out = voice.filter.Process(sig);
+        voice.filter.SetFreq(cutoff_base *
+                             (env_f_out * voice.filter_amount) *
+                             (1.0f - voice.follow));
+        float filter_out = voice.filter.Process(sig);
 
         float envOut = voice.amp_env.Process(voice.active);
         mix += filter_out * envOut;
@@ -106,17 +119,17 @@ void MoogySynth2::Process(float &outL, float &outR)
     outL = outR = mix * 0.4f;
 }
 
-void MoogySynth2::SetCutoffBase(float val) 
+void MoogySynth2::SetCutoffBase(float val)
 {
     cutoff_base = fminf(fmaxf(val, 100.0f), 8000.0f);
 }
 
-void MoogySynth2::AdjustCutoff(float delta) 
+void MoogySynth2::AdjustCutoff(float delta)
 {
     SetCutoffBase(cutoff_base + delta);
 }
 
-float MoogySynth2::GetCutoffBase() const 
+float MoogySynth2::GetCutoffBase() const
 {
     return cutoff_base;
 }
@@ -129,7 +142,7 @@ void MoogySynth2::NoteOn(NoteOnEvent m)
 
 void MoogySynth2::NoteOff(NoteOffEvent m)
 {
-    for(int v = 0; v < kNumVoices; v++)
+    for (int v = 0; v < kNumVoices; v++)
     {
         voices[v].NoteOff(m.note);
     }
@@ -167,9 +180,8 @@ void MoogySynth2::Voice::NoteOff(int midinote)
 {
     note = changeOctave(midinote, config.octave_adjust);
     note = foldNoteToRange(midinote, config.range_min, config.range_max);
-    if(note == midinote)
+    if (note == midinote)
     {
         active = false;
     }
 }
-

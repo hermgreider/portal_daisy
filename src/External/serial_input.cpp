@@ -35,6 +35,7 @@ void SerialInput::Update()
         scale = powf(2.0f, (scale - 0.5f) * 2.0f); // exponential
 
         // hw.PrintLine("Output %d", scale);
+        controller_->Mod2(scale);
     }
 }
 
