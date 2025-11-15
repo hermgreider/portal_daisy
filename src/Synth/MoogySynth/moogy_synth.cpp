@@ -1,4 +1,4 @@
-// === drone_synth.cpp ===
+// === moogy_synth.cpp ===
 #include <cmath>
 #include "Config/config.h"
 #include "moogy_synth.h"
@@ -6,12 +6,17 @@
 extern DaisySeed hw;
 extern Config config;
 
-extern DaisySeed hw;
+const float cutoffMin = 2000.0f;
+const float cutoffMax = 8000.0f;
+const float resMin = 0.1f;
+const float resMax = 0.4f;
 
 void MoogySynth::Init(float sr) 
 {
+    current_res = resMin; // print only
+
     samplerate = sr;
-    cutoff_base = 1200.0f;
+    cutoff_base = cutoffMin;
 
     lfo.Init(sr);
     lfo.SetFreq(0.05f);
@@ -28,12 +33,34 @@ void MoogySynth::Select3() {}
 
 void MoogySynth::InitVoices() 
 {
-    for (int i = 0; i < kNumVoices; ++i) {
+    for (int i = 0; i < kNumVoices; ++i) 
+    {
         InitVoice(voices[i]);
     }
 }
 
-void MoogySynth::InitVoice(Voice &v) 
+void MoogySynth::Mod2(float val)
+{
+    // Val is between 0 and 1
+
+    float curved = powf(val, 2.0f); // exponential
+
+    // Set values between min and max - note that Resonance and cutoff go in opposite directions
+    float res = resMin + (resMax - resMin) * (1.0f - curved);
+    float cutoff = cutoffMin + (cutoffMax - cutoffMin) * (1.0f - curved);
+    SetCutoffBase(cutoff);
+
+    current_res = res; // print only
+    hw.PrintLine("Moogy::Mod2, val %f, cutoff %f, res %f ", val, cutoff_base, res);
+
+    for (int v = 0; v < kNumVoices; ++v)
+    {
+        Voice &voice = voices[v];
+        voice.filter.SetRes(res);
+    }
+}
+
+void MoogySynth::InitVoice(Voice &v)
 {
     v.freq = 0;
     v.drift1 = v.drift2 = v.driftSub = 0.0f;
@@ -48,7 +75,7 @@ void MoogySynth::InitVoice(Voice &v)
     v.subOsc.SetWaveform(Oscillator::WAVE_TRI);
 
     v.filter.Init(samplerate);
-    v.filter.SetRes(0.2f);
+    v.filter.SetRes(0.1f);
     v.filter_amount = 1.0;
 
     v.amp_env.Init(samplerate);
@@ -76,7 +103,8 @@ void MoogySynth::Process(float &outL, float &outR)
     float mix = 0.0f;
     lfo_cutoff = cutoff_base + (lfo.Process() * 300.0f);
 
-    for (int v = 0; v < kNumVoices; ++v) {
+    for (int v = 0; v < kNumVoices; ++v) 
+    {
         Voice &voice = voices[v];
 
         float d1 = randWalk(voice.drift1, 0.00001f, 0.02f);
@@ -95,7 +123,7 @@ void MoogySynth::Process(float &outL, float &outR)
 
         float env_f_out = voice.filter_env.Process(voice.active);
 
-		voice.follow = 1.0f - (float (voice.note)/84.0f);	
+        voice.follow = 1.0f - (float(voice.note) / 84.0f);
 
     	voice.filter.SetFreq(cutoff_base * 
             (env_f_out * voice.filter_amount) * 
@@ -110,7 +138,7 @@ void MoogySynth::Process(float &outL, float &outR)
 
 void MoogySynth::SetCutoffBase(float val) 
 {
-    cutoff_base = fminf(fmaxf(val, 100.0f), 8000.0f);
+    cutoff_base = fminf(fmaxf(val, 100.0f), cutoffMax);
 }
 
 void MoogySynth::AdjustCutoff(float delta) 
@@ -127,14 +155,22 @@ void MoogySynth::NoteOn(NoteOnEvent m)
 {
     voices[current_voice].NoteOn(m.note);
     current_voice = (current_voice + 1) % kNumVoices;
+    
+    // hw.PrintLine("Moogy2::NoteOn, cutoff %f, res %f ", cutoff_base, current_res);
 }
 
 void MoogySynth::NoteOff(NoteOffEvent m)
 {
-    for(int v = 0; v < kNumVoices; v++)
+    for (int v = 0; v < kNumVoices; v++)
     {
         voices[v].NoteOff(m.note);
     }
+}
+
+static int changeOctave(int note, int octave_adjust)
+{
+    int transposed = note + 12 * config.octave_adjust;
+    return transposed;
 }
 
 static int foldNoteToRange(int note, int minNote, int maxNote)
@@ -145,12 +181,6 @@ static int foldNoteToRange(int note, int minNote, int maxNote)
         transposed += 12 * ((minNote - transposed + 11) / 12);
     else if (transposed > maxNote)
         transposed -= 12 * ((transposed - maxNote + 11) / 12);
-    return transposed;
-}
-
-static int changeOctave(int note, int octave_adjust)
-{
-    int transposed = note + 12 * config.octave_adjust;
     return transposed;
 }
 
@@ -169,9 +199,8 @@ void MoogySynth::Voice::NoteOff(int midinote)
 {
     note = changeOctave(midinote, config.octave_adjust);
     note = foldNoteToRange(midinote, config.range_min, config.range_max);
-    if(note == midinote)
+    if (note == midinote)
     {
         active = false;
     }
 }
-
