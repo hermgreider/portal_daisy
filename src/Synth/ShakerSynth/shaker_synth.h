@@ -9,29 +9,30 @@
 using namespace daisy;
 using namespace daisysp;
 
-class ShakerSynth : public Synth {
-  public:
+class ShakerSynth : public Synth
+{
+public:
+  ShakerSynth() {}
+  void Init(float sample_rate);
+  void Update();
 
-    ShakerSynth() {}
-    void Init(float sample_rate);
-    void Update();
-    
-    /* Trigger something - typically Button press or Encoder click */
-    void Select1();
-    void Select2();
-    void Select3();
+  /* Trigger something - typically Button press or Encoder click */
+  void Select1();
+  void Select2();
+  void Select3();
 
-    void Process(float &outL, float &outR);
+  void Mod2(float val);
 
-    void NoteOn(NoteOnEvent m);
-    void NoteOff(NoteOffEvent m);
+  void Process(float &outL, float &outR);
 
-  private:
+  void NoteOn(NoteOnEvent m);
+  void NoteOff(NoteOffEvent m);
 
-    WhiteNoise noise;
-    AdEnv env;
-    Svf filter;
-    ReverbSc reverb;
+private:
+  WhiteNoise noise;
+  AdEnv env;
+  Svf filter;
+  ReverbSc reverb;
 
-    float reverb_mix_ = 0.3f;
+  float reverb_mix_ = 0.3f;
 };
