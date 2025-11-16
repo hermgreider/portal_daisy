@@ -56,7 +56,7 @@ void ShakerSynth::Mod2(float val)
     float decay = fmaxf(val / 2, config.shaker_decay);
     env.SetTime(ADENV_SEG_ATTACK, attack);
     env.SetTime(ADENV_SEG_DECAY, decay);
-    hw.PrintLine("Shaker::Mod2, val %f attack: %f, decay: %f", val, attack, decay);
+    // hw.PrintLine("Shaker::Mod2, val %f attack: %f, decay: %f", val, attack, decay);
 }
 
 void ShakerSynth::Process(float &outL, float &outR)
