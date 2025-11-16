@@ -6,10 +6,10 @@
 extern DaisySeed hw;
 extern Config config;
 
-const float cutoffMin = 2000.0f;
-const float cutoffMax = 8000.0f;
+const float cutoffMin = 1000.0f;
+const float cutoffMax = 6000.0f;
 const float resMin = 0.1f;
-const float resMax = 0.4f;
+const float resMax = 0.3f;
 
 void MoogySynth::Init(float sr) 
 {

@@ -8,25 +8,28 @@
 
 #include "config.h"
 
+// Fsus4 - F Bb C Eb
 std::vector<MyMidiEvent> fallback_sequence = {
-{0, 1, 60, 127}, {1000, 0, 60, 0}, // C3
-{1000, 1, 72, 127}, {1500, 0, 72, 0}, // C4
-{1500, 1, 72, 20}, {2000, 0, 72, 0},
-{2000, 1, 62, 20}, {2500, 0, 62, 0},
-{2500, 1, 69, 127}, {3500, 0, 69, 0}, // G
-{3500, 1, 67, 127}, {4000, 0, 67, 0}, // A
-{4000, 1, 71, 127}, {4500, 0, 71, 0}, // B
+{0, 1, 65, 127}, {2000, 0, 65, 0}, // F
+{2000, 1, 77, 127}, {3000, 0, 77, 0}, // F
+{3000, 1, 60, 127}, {3500, 0, 60, 0}, // C
+{3500, 1, 63, 127}, {4000, 0, 60, 0}, // Eb
+{4000, 1, 77, 20}, {5000, 0, 77, 0}, // F
+{5000, 1, 72, 20}, {6000, 0, 72, 0}, // C
+{6000, 1, 70, 127}, {6500, 0, 70, 0}, // Bb
+{6500, 1, 75, 127}, {7000, 0, 75, 0},
+{7000, 1, 70, 127}, {8000, 0, 70, 0},
 };
 
 // Pick configuration by uncommenting one of these
+// #define PANE4_HORIZ_MOOGY
 // #define PANE1_BELL
-// #define PANE8_BELL
-#define PANE6_MOOGY_BASS
-// #define PANE8_TALL_SHAKER
 // #define PANE4_SHAKER
 // #define PANE4_MOOGY
-// #define PANE4_HORIZ_MOOGY
-// #define MOOGY_BASS_NO_SD
+// #define PANE8_ORIG_BELL
+// #define PANE8_NARROW_SHAKER
+#define PANE8_TALL_MOOGY_BASS_NO_SD
+// #define PANE6_MOOGY_BASS
 // #define STRING_TEST
 
 #ifdef PANE1_BELL_SYNTH
@@ -46,7 +49,7 @@ Config config = {
   fallback_sequence
 };
 
-#elif defined(PANE8_BELL)
+#elif defined(PANE8_ORIG_BELL)
 
 BellSynth synth;
 Config config = { 
@@ -76,7 +79,7 @@ Config config = {
   fallback_sequence
 };
 
-#elif defined(PANE8_TALL_SHAKER)
+#elif defined(PANE8_NARROW_SHAKER)
 
 ShakerSynth synth;
 Config config = { 
@@ -123,7 +126,22 @@ Config config = {
   fallback_sequence
 };
 
-#elif defined(MOOGY_BASS_NO_SD)
+#elif defined(PANE4_HORIZ_MOOGY)
+
+MoogySynth synth;
+Config config = { 
+  &synth, 
+  "Portals_Brass5.mid", 
+  500000.0f,   // default 120 BPM
+  0,           // octaves_adjust
+  55,          // range_min
+  95,          // range_max
+  0,           // bell_type
+  0, 0, 0, 0,  // shaker
+  fallback_sequence
+};
+
+#elif defined(PANE8_TALL_MOOGY_BASS_NO_SD)
 
 MoogySynth2 synth;
 Config config = { 
